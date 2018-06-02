@@ -1,28 +1,34 @@
-//package com.data.yaml
-//
-//import net.jcazevedo.moultingyaml._
-//import org.apache.spark.internal.Logging
-//
-//import scala.io.Source
-//import scala.util.control.NonFatal
-//
-//case class PropConfigs(config: Map[String, Any])
-//
-//object YamlConfig extends Logging with DefaultYamlProtocol {
-//  lazy private val prop: PropConfigs = {
-//    try {
-//      val prop: PropConfigs =
-//        Source.fromInputStream(this.getClass.getResource("/configs/config.yaml").openStream()).mkString.parseYaml.convertTo[PropConfigs]
-//      log.info(s"Config: $prop")
-//      prop
-//    } catch {
-//      case NonFatal(e) =>
-//        log.error("Exception while creating YAML for configs: ", e)
-//        throw new IllegalAccessException()
-//    }
-//  }
-//  implicit val formatPropConfigs = yamlFormat1(PropConfigs)
-//
-//  def apply(): PropConfigs = prop
-//
-//}
+package com.data.yaml
+
+import net.jcazevedo.moultingyaml._
+import org.apache.logging.log4j.scala.Logging
+
+import scala.io.Source
+import scala.util.control.NonFatal
+
+case class PropConfigs(csvPaths: Map[String, String])
+
+object YamlConfig extends DefaultYamlProtocol with Logging {
+  lazy private val prop: PropConfigs = {
+    try {
+      val prop: PropConfigs =
+        Source
+          .fromInputStream(this.getClass.getResource("configs/config.yaml")
+            .openStream())
+          .mkString.parseYaml
+          .convertTo[PropConfigs]
+      logger.info(s"Config: $prop")
+
+      prop
+    }
+    catch {
+      case NonFatal(e) =>
+        logger.error("Exception while creating YAML for configs: ", e)
+        throw new IllegalAccessException()
+    }
+  }
+  implicit val propConfigsFormat = yamlFormat1(PropConfigs)
+
+  def apply(): PropConfigs = prop
+
+}

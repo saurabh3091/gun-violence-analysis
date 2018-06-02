@@ -1,16 +1,18 @@
 package com.data
 
-import com.data.utils.SparkUtil
-import org.apache.spark.sql.functions._
-import org.apache.spark.sql._
-import org.apache.logging.log4j.scala.Logging
-import com.data.utils.DataUtil._
-import com.data.utils.Constants._
 import com.data.ExploratoryAnalysis._
 import com.data.models._
+import com.data.utils.DataUtil._
+import com.data.utils.SparkUtil
+import com.data.utils.SparkUtil._
+import com.data.yaml.YamlConfig
+import org.apache.logging.log4j.scala.Logging
+import org.apache.spark.sql._
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types.StructType
 import org.apache.spark.storage.StorageLevel
 
-object GunViolence extends Logging{
+object GunViolenceAnalyzer extends Logging {
   def main(args: Array[String]): Unit = {
     //Initialize spark context
     implicit val spark: SparkSession = SparkUtil(appName = "Gun-violence-Analysis")
@@ -25,12 +27,9 @@ object GunViolence extends Logging{
 
   def process(path: String)(implicit spark: SparkSession): Unit = {
     import spark.implicits._
-    val schema = Encoders.product[GunViolenceData].schema
-    val gunViolenceDataset: Dataset[GunViolenceData] = spark
-      .read
-      .option("header", value = true)
-      .schema(schema)
-      .csv(path).as[GunViolenceData]
+    val schema: StructType = Encoders.product[GunViolenceData].schema
+    val gunViolenceDataset: Dataset[GunViolenceData] =
+      readCSVAsDataFrame(path, header = true, schema = schema).as[GunViolenceData]
 
     gunViolenceDataset.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
@@ -39,12 +38,12 @@ object GunViolence extends Logging{
 
     //state wise violence incidents
     val mostViolentStates: Dataset[Row] = gunViolenceDataset
-      .select("state")
-      .groupBy("state")
+      .select(col = "state")
+      .groupBy(col1 = "state")
       .count()
-      .orderBy(desc("count"))
-    mostViolentStates.coalesce(1).write.option("header", value = true)
-      .csv("output/state-wise-violence")
+      .orderBy(desc(columnName = "count"))
+
+    saveDatasetAsCSV(mostViolentStates, YamlConfig().csvPaths("stateWiseViolence"))
     logger.info(s"Top 10 most violent cities: ${mostViolentStates.take(10)}")
 
     //year wise crimes
@@ -56,7 +55,7 @@ object GunViolence extends Logging{
       .groupBy("year")
       .count()
       .orderBy(desc("year"))
-    crimesByYear.coalesce(1).write.option("header", value = true).csv("output/crimes-by-year")
+    saveDatasetAsCSV(crimesByYear, YamlConfig().csvPaths("yearWiseViolence"))
     logger.info(s"Year wise violence: ${crimesByYear.show()}")
 
 
@@ -84,7 +83,7 @@ object GunViolence extends Logging{
       .count()
       .orderBy(desc("count"))
 
-    gunTypes.coalesce(1).write.option("header", value = true).csv("output/gun-types")
+    saveDatasetAsCSV(gunTypes, YamlConfig().csvPaths("gunTypes"))
 
     val stateParticipantsDF: DataFrame = gunViolenceDataset
       .filter(r => r.participant_gender.isDefined && r.state.isDefined && r.participant_age_group.isDefined)
@@ -102,7 +101,7 @@ object GunViolence extends Logging{
       .count()
       .orderBy(asc("state"), desc("gender"))
 
-    genderWiseParticipants.coalesce(1).write.option("header", value = true).csv("output/state-gender-wise-counts")
+    saveDatasetAsCSV(genderWiseParticipants, YamlConfig().csvPaths("stateGenderWise"))
 
     //state-age wise counts of participants
     val ageWiseParticipants: Dataset[Row] = stateParticipantsDF
@@ -111,6 +110,6 @@ object GunViolence extends Logging{
       .count()
       .orderBy(asc("state"), asc("age"))
 
-    ageWiseParticipants.coalesce(1).write.option("header", value = true).csv("output/state-age-wise-counts")
+    saveDatasetAsCSV(ageWiseParticipants, YamlConfig().csvPaths("stateAgeWise"))
   }
 }

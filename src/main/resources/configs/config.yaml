@@ -1,2 +1,6 @@
-config:
-  dataCSV: "/resources/gun-violence-data_01-2013_03-2018.csv"
+csvPaths:
+  stateWiseViolence: "output/state-wise-violence"
+  yearWiseViolence: "output/crimes-by-year"
+  gunTypes: "output/gun-types"
+  stateGenderWise: "output/state-gender-wise-counts"
+  stateAgeWise: "output/state-age-wise-counts"
