@@ -13,12 +13,12 @@ object YamlConfig extends DefaultYamlProtocol with Logging {
     try {
       val prop: PropConfigs =
         Source
-          .fromInputStream(this.getClass.getResource("configs/config.yaml")
-            .openStream())
-          .mkString.parseYaml
+          .fromFile("src/main/resources/configs/config.yaml")
+          .mkString
+          .parseYaml
           .convertTo[PropConfigs]
-      logger.info(s"Config: $prop")
 
+      logger.info(s"Config: $prop")
       prop
     }
     catch {

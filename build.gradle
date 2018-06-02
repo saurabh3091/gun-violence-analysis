@@ -1,5 +1,5 @@
-group 'com.ygroup'
-version '1.0-SNAPSHOT'
+group 'com.data'
+version '0.1'
 
 apply plugin: 'java'
 apply plugin: 'scala'
@@ -21,7 +21,20 @@ dependencies {
 
 
     // YAML handling
+    // https://mvnrepository.com/artifact/net.jcazevedo/moultingyaml
     compile group: 'net.jcazevedo', name: 'moultingyaml_2.11', version: '0.4.0'
 
 
+}
+
+jar {
+    zip64 true
+    from {
+        (configurations.runtime).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    manifest {
+        attributes("Main-Class": "Main" )
+    }
 }
