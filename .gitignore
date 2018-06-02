@@ -1,0 +1,6 @@
+*.log
+out
+spark-warehouse
+*.swp
+*.iml
+

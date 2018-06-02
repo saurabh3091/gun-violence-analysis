@@ -1,0 +1,33 @@
+package com.data.models
+
+case class GunViolenceData(incident_id : Option[Int],
+                           date : Option[String],
+                           state : Option[String],
+                           city_or_county : Option[String],
+                           address : Option[String],
+                           n_killed : Option[Short],
+                           n_injured : Option[Short],
+                           incident_url : Option[String],
+                           source_url : Option[String],
+                           incident_url_fields_missing : Option[String],
+                           congressional_district : Option[Short],
+                           gun_stolen : Option[String],
+                           gun_type : Option[String],
+                           incident_characteristics : Option[String],
+                           latitude : Option[String],
+                           location_description : Option[String],
+                           longitude : Option[String],
+                           n_guns_involved : Option[Short],
+                           notes : Option[String],
+                           participant_age : Option[String],
+                           participant_age_group : Option[String],
+                           participant_gender : Option[String],
+                           participant_name : Option[String],
+                           participant_relationship : Option[String],
+                           participant_status : Option[String],
+                           participant_type : Option[String],
+                           sources : Option[String],
+                           state_house_district : Option[Short],
+                           state_senate_district : Option[Short])
+
+case class StateParticipantsInfo(state: String, gender: List[String], age: List[String])
