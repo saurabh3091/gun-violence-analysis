@@ -1,5 +1,15 @@
 # US Gun Violence Analyses
 
+### Problem Statement
+For a given dataset on Kaggle
+https://www.kaggle.com/jameslko/gun-violence-data
+
+* To figure out:
+    1. Which States are most violent
+    2. Yearly trend of gun related violence
+    3. Total injuries and killings till now
+    4. Types of guns used
+    5. Gender and Age wise participants in gun related crimes
 ### Prerequisites
 
 Gradle, 
@@ -7,9 +17,9 @@ Scala 2.11,
 Spark 2.2.1
 
 ### Build
-goto the gun-violence-analysis and run
+goto the gun-violence-analysis directory and run
 ```
-gradle fatJar
+gradle build
 ```
 
 ## Run on Local
@@ -31,3 +41,6 @@ spark-submit \
   --num-executors 3 \
   build/libs/gun-violence-analysis-0.1.jar path-to-csv
 ```
+
+## Output
+Will be stored as csv file in locations specified in config.yaml
