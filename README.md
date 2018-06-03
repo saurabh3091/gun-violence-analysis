@@ -15,7 +15,7 @@ gradle fatJar
 ## Run on Local
 
 ```
-spark-submit --master "local[*]" --class com.data.GunViolenceAnalyzer build/libs/gun-violence-analysis-0.1.jar
+spark-submit --master "local[*]" --class com.data.GunViolenceAnalyzer build/libs/gun-violence-analysis-0.1.jar path-to-csv
 ```
 
 
@@ -29,5 +29,5 @@ spark-submit \
   --deploy-mode cluster \  # can be client for client mode
   --executor-memory 128M \
   --num-executors 3 \
-  build/libs/gun-violence-analysis-0.1.jar
+  build/libs/gun-violence-analysis-0.1.jar path-to-csv
 ```

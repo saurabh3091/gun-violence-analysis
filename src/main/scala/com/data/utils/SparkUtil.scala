@@ -1,21 +1,26 @@
 package com.data.utils
 
 import org.apache.logging.log4j.scala.Logging
+import org.apache.spark.SparkConf
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 
 object SparkUtil extends Logging {
   /**
-    * Creates and returns a spark session with master set as local[*]
+    * Creates and returns a spark session
     *
     * @param appName Name of your spark application
     * @return Returns a [[SparkSession]]
     */
   def apply(appName: String): SparkSession = {
+    val conf = new SparkConf()
+    if (conf.getOption("spark.master").isEmpty)
+      conf.setMaster("local[*]")
+
     val spark: SparkSession = SparkSession
       .builder()
       .appName(appName)
-      .config("spark.master", "local[*]")
+      .config(conf)
       .getOrCreate()
 
     spark

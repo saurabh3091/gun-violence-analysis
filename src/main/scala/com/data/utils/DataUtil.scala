@@ -1,5 +1,7 @@
 package com.data.utils
 
+import scala.util.Try
+
 object DataUtil {
   /**
     * Parses a Date of format YYYY-MM-DD and returns YYYY as Int
@@ -7,7 +9,7 @@ object DataUtil {
     * @param date Date as YYYY-MM-DD
     * @return YEAR as YYYY
     */
-  def getYearFromDateString(date: String): Int = date.split("-").head.toInt
+  def getYearFromDateString(date: String): Int = Try(date.split("-").head.toInt).getOrElse(0)
 
   /**
     * Parses a string having delimiters
@@ -20,10 +22,10 @@ object DataUtil {
   def getListFromDelimitedString(delimitedInfo: String): List[String] = {
     //some data has split on double pipe(||) and some has split on single pipe(|)
     if (delimitedInfo.contains("||")) {
-      delimitedInfo.split("\\|\\|").map(_.split("::").last).toList
+      delimitedInfo.split("\\|\\|").map(_.split("::").last.toLowerCase).toList
     }
     else {
-      delimitedInfo.split("\\|").map(_.split(":").last).toList
+      delimitedInfo.split("\\|").map(_.split(":").last.toLowerCase).toList
     }
   }
 }
