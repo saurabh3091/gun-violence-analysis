@@ -20,12 +20,13 @@ Spark 2.2.1
 goto the gun-violence-analysis directory and run
 ```
 gradle build
+gradle copyDeps
 ```
 
 ## Run on Local
 
 ```
-spark-submit --master "local[*]" --class com.data.GunViolenceAnalyzer build/libs/gun-violence-analysis-0.1.jar path-to-csv
+spark-submit --master "local[3]" --driver-class-path "build/libs/libext/*" --class com.data.GunViolenceAnalyzer build/libs/gun-violence-analysis-0.1.jar  path-to-csv
 ```
 
 

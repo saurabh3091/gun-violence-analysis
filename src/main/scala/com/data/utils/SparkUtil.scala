@@ -2,8 +2,8 @@ package com.data.utils
 
 import org.apache.logging.log4j.scala.Logging
 import org.apache.spark.SparkConf
+import org.apache.spark.sql._
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 
 object SparkUtil extends Logging {
   /**
@@ -51,7 +51,7 @@ object SparkUtil extends Logging {
     */
   def saveDatasetAsCSV(ds: Dataset[Row], path: String): Unit = {
     ds.coalesce(numPartitions = 1)
-      .write.option("header", value = true)
+      .write.mode(SaveMode.Overwrite).option("header", value = true)
       .csv(path)
   }
 }
